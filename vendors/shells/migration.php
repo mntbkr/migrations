@@ -214,6 +214,9 @@ class MigrationShell extends Shell {
 			if (!preg_match('/^([a-z0-9_]+|\s)+$/', $name)) {
 				$this->out('');
 				$this->err(sprintf(__d('migrations', 'Migration name (%s) is invalid. It must only contain alphanumeric characters.', true), $name));
+			} elseif (file_exists($this->path . $name . '.php')) {
+				$this->out('');
+				$this->err(sprintf(__d('migrations', 'Migration name (%s) is invalid. Another migration with the same name already exists.', true), $name));
 			} else {
 				$name = str_replace(' ', '_', trim($name));
 				break;
