@@ -260,20 +260,38 @@ class MigrationShell extends Shell {
 			}
 		}
 
-		$this->out(__d('migrations', 'Generating Migration...', true));
-		$class = 'M' . str_replace('-', '', String::uuid());
-		$this->_writeMigration($name, $class, $migration);
+		$version = 0;	
 
-		$version = 1;
-		$map = array();
 		if (file_exists($this->path . 'map.php')) {
 			include $this->path . 'map.php';
 			ksort($map);
 			end($map);
 
 			list($version) = each($map);
-			$version++;
+
+			$key = key($map[$version]);
+
+			if(file_exists($this->path . $key . '.php')) {
+				include $this->path . $key . '.php';
+				
+				$previous = new $map[$version][$key];
+
+				if($previous->migration === $migration) {
+					$response = $this->in(__d('migragions', 'Migration seems to be identical to the previous one. Do you wan\'t to generate it anyway?', true), array('y', 'n'), 'n');
+					if(strtolower($response) === 'n') {
+						$this->out(__d('migrations', 'Migration aborted', true));
+						exit;
+					}
+				}
+			}
 		}
+
+		$this->out(__d('migrations', 'Generating Migration...', true));
+		$class = 'M' . str_replace('-', '', String::uuid());
+		$this->_writeMigration($name, $class, $migration);
+
+		$version++;
+
 		$map[$version] = array($name => $class);
 
 		$this->out(__d('migrations', 'Mapping Migrations...', true));
