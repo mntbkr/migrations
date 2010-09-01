@@ -44,7 +44,14 @@ class <?php echo $class; ?> extends CakeMigration {
  * @access public
  */
 	public function before($direction) {
-		return true;
+		if($direction == 'up')
+		{
+			return true;
+		}
+		if($direction == 'down')
+		{
+			return true;
+		}
 	}
 
 /**
@@ -55,7 +62,14 @@ class <?php echo $class; ?> extends CakeMigration {
  * @access public
  */
 	public function after($direction) {
-		return true;
+		if($direction == 'up')
+		{
+			return true;
+		}
+		if($direction == 'down')
+		{
+			return true;
+		}
 	}
 }
 <?php echo "?>"; ?>
